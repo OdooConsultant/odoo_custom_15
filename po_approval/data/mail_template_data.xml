@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data noupdate="0">
+		
+		<record id="mail_template_purchase_approval" model="mail.template">
+			<field name="name">Purchase Order: Approval Email</field>
+			<field name="model_id" ref="purchase.model_purchase_order"/>
+			<field name="subject">{{ object.company_id.name }}(Ref {{ object.name or 'n/a' }}) Approval</field>
+			<field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+			<field name="email_to">{{ (object.approval_user_id.email_formatted or object.approval_user_id.partner_id.email_formatted) }}</field>
+			<field name="body_html" type="html">
+				<div style="margin: 0px; padding: 0px;background:#ededed">
+					<p style="margin: 0px;margin-left:10px; padding: 0px; font-size: 12px;">
+						<br/>
+						Purchase Order
+						<strong t-out="object.name or ''">
+						</strong>
+						requires your approval below are the details:-
+						<br/>
+						<p>
+							<a t-att-href="object.approval_url" style="height: 45px;width: 105px;background-color:
+								#fd5b2a;padding: 10px;color: #fff;font-weight: 700;">View Purchase Order</a>
+						</p>
+						<br/>
+						<br/>
+					</p>
+					<div style="margin: 0px; padding: 0px;">
+						<table border="1" class="table" width="100%" style="color: #454748; font-size: 12px;
+							border-collapse: collapse;">
+							<tr style="background:#745a78; color:#fff;">
+								<td style="background-color:#745a78; color:#fff;" colspan="2">
+									<center>
+										<strong>Purchase Order Detail</strong>
+									</center>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Reference</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.name" style="color:#aad1af"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Department</td>
+								<td style="border:2px solid #dee2e6;">
+									<span>-</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Total</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.amount_total"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Untaxed Amount</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.amount_untaxed"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Taxes</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.amount_tax"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Approval Level</td>
+								<td style="border:2px solid #dee2e6;">
+									<span>-</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Is For Non-Stockable Order ?</td>
+								<td style="border:2px solid #dee2e6;">
+									<span>-</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Currency</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.currency_id.name">
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Company Currency</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.company_id.currency_id.name">
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Currency Exchange Rate</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.currency_id.rate">
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td style="border:2px solid #dee2e6;">Order Total(Company Currency)</td>
+								<td style="border:2px solid #dee2e6;">
+									<span t-out="object.company_id.currency_id.symbol">
+									</span>
+									<span t-out="object.amount_total">
+									</span>
+								</td>
+							</tr>
+						</table>
+						<table border="1" class="table" width="100%" style="color: #454748; font-size: 12px;
+							border-collapse: collapse;">
+							<tr style="background:#745a78; color:#fff;">
+								<td style="background-color:#745a78; color:#fff;" colspan="5">
+									<center>
+										<strong>Purchase Order Line Detail</strong>
+									</center>
+								</td>
+							</tr>
+							<tr style="border-bottom: 2px solid #dee2e6;">
+								<td align="center" style="width: 150px;border:2px solid #dee2e6;">
+									<strong>Products</strong>
+								</td>
+								<td align="center" style="border:2px solid #dee2e6;">
+									<strong>Description</strong>
+								</td>
+								<td align="center" style="border:2px solid #dee2e6;">
+									<strong>Quantity</strong>
+								</td>
+								<td align="center" style="border:2px solid #dee2e6;">
+									<strong>Unit Price</strong>
+								</td>
+								<td align="center" style="border:2px solid #dee2e6;">
+									<strong>Subtotal</strong>
+								</td>
+							</tr>
+							<t t-foreach="object.order_line" t-as="line">
+								<tr>
+									<td style="border:2px solid #dee2e6;" align="center" t-out="line.product_id.name or
+										''">
+									</td>
+									<td style="border:2px solid #dee2e6;" align="center" t-out="line.name or ''">
+									</td>
+									<td style="border:2px solid #dee2e6;" align="center" t-out="line.product_qty or 0">
+									</td>
+									<td style="border:2px solid #dee2e6;" align="center">
+										<span t-out="object.company_id.currency_id.symbol">
+										</span>
+										<span t-out="line.price_unit or 0"/>
+									</td>
+									<td style="border:2px solid #dee2e6;" align="center">
+										<span t-out="object.company_id.currency_id.symbol">
+										</span>
+										<span t-out="line.price_subtotal or 0"/>
+									</td>
+								</tr>
+							</t>
+						</table>
+					</div>
+				</div>
+			</field>
+			<field name="report_template" ref="purchase.action_report_purchase_order"/>
+			<field name="report_name">PO_{{ (object.name or '').replace('/','_') }}</field>
+			<field name="lang">{{ object.approval_user_id.partner_id.lang }}</field>
+			<field name="auto_delete" eval="True"/>
+		</record>
+		
+		<record id="mail_template_purchase_reject" model="mail.template">
+			<field name="name">Purchase Order: Reject Email</field>
+			<field name="model_id" ref="purchase.model_purchase_order"/>
+			<field name="subject">{{ object.company_id.name }}(Ref {{ object.name or 'n/a' }}) Reject</field>
+			<field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+			<field name="email_to">{{ (object.create_uid.email_formatted or object.create_uid.partner_id.email_formatted) }}</field>
+			<field name="body_html" type="html">
+				<div style="margin: 0px; padding: 0px;background:#ededed">
+					<p style="margin: 0px;margin-left:10px; padding: 0px; font-size: 12px;">
+						<br/>
+						Your Purchase Order
+						<strong t-out="object.name or ''">
+						</strong>
+						has been rejected.
+						<br/>
+						Reason : <span t-out="ctx.get('reason')"/>
+						<br/>
+						<br/>
+					</p>
+				</div>
+			</field>
+			<field name="report_template" ref="purchase.action_report_purchase_order"/>
+			<field name="report_name">PO_{{ (object.name or '').replace('/','_') }}</field>
+			<field name="lang">{{ object.create_uid.partner_id.lang }}</field>
+			<field name="auto_delete" eval="True"/>
+		</record>
+		
+		<record id="mail_template_purchase_approved" model="mail.template">
+			<field name="name">Purchase Order: Approved Email</field>
+			<field name="model_id" ref="purchase.model_purchase_order"/>
+			<field name="subject">{{ object.company_id.name }}(Ref {{ object.name or 'n/a' }}) Approved</field>
+			<field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+			<field name="email_to">{{ (object.create_uid.email_formatted or object.create_uid.partner_id.email_formatted) }}</field>
+			<field name="body_html" type="html">
+				<div style="margin: 0px; padding: 0px;background:#ededed">
+					<p style="margin: 0px;margin-left:10px; padding: 0px; font-size: 12px;">
+						<br/>
+						Your Purchase Order
+						<strong t-out="object.name or ''">
+						</strong>
+						has been approved &#38; confirmed.
+						<br/>
+						<br/>
+					</p>
+				</div>
+			</field>
+			<field name="report_template" ref="purchase.action_report_purchase_order"/>
+			<field name="report_name">PO_{{ (object.name or '').replace('/','_') }}</field>
+			<field name="lang">{{ object.create_uid.partner_id.lang }}</field>
+			<field name="auto_delete" eval="True"/>
+		</record>
+	</data>
+</odoo>
