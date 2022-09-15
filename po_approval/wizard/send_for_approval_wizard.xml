@@ -6,7 +6,8 @@
 		<field name="arch" type="xml">
 			<form string="Approval User">
 				<group>
-					<field name="user_id" required="1"/>
+					<field name="purchase_id" invisible="1"/>
+					<field name="user_id" required="1" context="{'approval_user_details': purchase_id}"/>
 				</group>
 				<footer>
 					<button name="confirm" type="object" string="Confirm" class="oe_highlight"/>

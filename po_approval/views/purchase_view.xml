@@ -8,13 +8,31 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="approved_button_bool" invisible="1"/>
                 <field name="approval_url" invisible="1"/>
-                <field name="analytic_account_id" attrs="{'readonly':[('state','=','purchase')]}"/>
+                <field name="analytic_account_id" attrs="{'readonly':[('state','=','po awaiting')]}"/>
             </xpath>
-            
             <xpath expr="//header" position="inside">
                 <button name="%(po_approval.send_for_approval_wiz_action)d" states="draft" string="Send For Approval" type="action" class="oe_highlight"/>
+                <button name="recall_po" states="po awaiting" string="Recall" type="object" class="oe_highlight"/>
                 <button name="approve_po" string="Approve" type="object" class="oe_highlight" attrs="{'invisible':[('approved_button_bool','!=',True)]}"/>
                 <button name="%(po_approval.reject_reason_wiz_action)d" string="Reject" type="action" class="oe_highlight" attrs="{'invisible':[('approved_button_bool','!=',True)]}"/>
+            </xpath>
+            <xpath expr="/form/header/button[@name='button_confirm'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/form/header/button[@name='button_confirm'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel','po awaiting'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='notes']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','po awaiting'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','po awaiting'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','po awaiting'))]}</attribute>
             </xpath>
             
             <xpath expr="//notebook" position="inside">
@@ -32,6 +50,6 @@
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
                 <attribute name="attrs">{'readonly': [('parent.state','=','purchase')]}</attribute>
             </xpath>
-        </field>
+		</field>
     </record>
 </odoo>
