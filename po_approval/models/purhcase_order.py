@@ -58,17 +58,10 @@ class PurchaseOrder(models.Model):
         return res
 
     def recall_po(self):
+        msg = _("Recall the PO [%s] by %s !" % (self.name, self.env.user.name))
+        self.message_post(body=msg)
         self.button_draft()
         return True
-    #
-    # def write(self, vals):
-    #     res = super(PurchaseOrder, self).write(vals)
-    #     if res and vals:
-    #         for rec in self:
-    #             state = vals.get('state',False) or rec.state
-    #             if state == 'po awaiting':
-    #                 raise ValidationError("user cannot be able to edit the PO in awaiting")
-    #     return res
 
     def _compute_approved_button_bool(self):
         for rec in self:

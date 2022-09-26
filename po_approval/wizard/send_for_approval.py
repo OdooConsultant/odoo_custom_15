@@ -15,11 +15,12 @@ class SendForApproval(models.TransientModel):
         purchase_id = self.env['purchase.order'].sudo().search([('id', '=', active_id)])
         domain = [('id', '!=', self.env.user.id)]
         users = []
-        to_currency_id = self.env['res.currency'].sudo().search([('name', '=', 'NZD')], limit=1)
         if purchase_id.currency_id.name == 'NZD':
             amount = purchase_id.amount_total
         else:
-            amount = purchase_id.currency_id._convert(purchase_id.amount_total, to_currency_id, purchase_id.company_id, fields.Date.today())
+            to_currency_id = self.env['res.currency'].sudo().search([('name', '=', 'NZD')], limit=1)
+            nzd_company_id = self.env['res.company'].sudo().search([('currency_id.name', '=', 'NZD')], limit=1)
+            amount = purchase_id.currency_id._convert(purchase_id.amount_total, to_currency_id, nzd_company_id, fields.Date.today())
         if purchase_id:
             if not purchase_id.analytic_account_id and purchase_id.partner_id.approval_id:
                 approval_id = purchase_id.partner_id.approval_id

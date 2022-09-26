@@ -56,7 +56,8 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		
-		<menuitem name="Po Approval Table" id="po_approval_menu_root_menu" action="po_approval.po_approval_action_window"/>
+
+		<menuitem name="Po Approval Table" id="po_approval_menu_root_menu" action="po_approval.po_approval_action_window" parent="purchase.menu_purchase_config" sequence="10"/>
 		
 		<menuitem name="Po Approval" id="po_approval_menu_1" parent="po_approval.po_approval_menu_root_menu"
 			action="po_approval.po_approval_action_window"/>
