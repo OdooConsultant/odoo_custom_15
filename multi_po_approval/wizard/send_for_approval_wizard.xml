@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="send_for_approval_wiz" model="ir.ui.view">
+		<field name="name">send.approval.wizard.form</field>
+		<field name="model">approval.send</field>
+		<field name="arch" type="xml">
+			<form string="Approval User">
+				<group>
+					<field name="purchase_id" invisible="1"/>
+					<field name="second_user_bool" invisible="1"/>
+					<field name="user_id" required="1" context="{'approval_user_details': purchase_id}"/>
+					<field name="second_user_id" attrs="{'invisible':[('second_user_bool','=',False)],'required':[('second_user_bool','=',True)]}" context="{'approval_user_details': purchase_id}"/>
+				</group>
+				<footer>
+					<button name="confirm" type="object" string="Confirm" class="oe_highlight"/>
+					<button special="cancel" data-hotkey="z" string="Cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+	
+	<record id="send_for_approval_wiz_action" model="ir.actions.act_window">
+		<field name="name">Approval User</field>
+		<field name="res_model">approval.send</field>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+		<field name="view_id" ref="send_for_approval_wiz"/>
+	</record>
+</odoo>

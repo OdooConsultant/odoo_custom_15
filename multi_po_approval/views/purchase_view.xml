@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="purchase_order_form_inherit">
+        <field name="name">purchase.order.view.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="approved_button_bool" invisible="1"/>
+                <field name="second_approved_button_bool" invisible="1"/>
+                <field name="approval_url" invisible="1"/>
+                <field name="analytic_account_id" attrs="{'readonly':[('state','in',('first_approval_sent','second_approval_sent'))]}"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="%(multi_po_approval.send_for_approval_wiz_action)d" states="draft" string="Send For Approval" type="action" class="oe_highlight"/>
+                <button name="recall_po" states="first_approval_sent,second_approval_sent" string="Recall" type="object" class="oe_highlight"/>
+                <button name="first_approve_po" string="Approve" type="object" class="oe_highlight"  attrs="{'invisible':[('approved_button_bool','!=',True)]}"/>
+                <button name="%(multi_po_approval.reject_reason_wiz_action)d" string="Reject" type="action" class="oe_highlight" attrs="{'invisible':[('approved_button_bool','!=',True)]}"/>
+                
+                <button name="approve_po" string="Approve" type="object" class="oe_highlight" attrs="{'invisible':[('second_approved_button_bool','!=',True)]}"/>
+                <button name="%(multi_po_approval.reject_reason_wiz_action)d" string="Reject" type="action" class="oe_highlight" attrs="{'invisible':[('second_approved_button_bool','!=',True)]}"/>
+                	
+            </xpath>
+            <xpath expr="/form/header/button[@name='button_confirm'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="/form/header/button[@name='button_confirm'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel','first_approval_sent','second_approval_sent'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='notes']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','first_approval_sent','second_approval_sent'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','first_approval_sent','second_approval_sent'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('invoice_status','=', 'invoiced'),('state', 'in', ('done', 'cancel','first_approval_sent','second_approval_sent'))]}</attribute>
+            </xpath>
+            
+            <xpath expr="//notebook" position="inside">
+                <page name="approval_user_detail" string="Approval Detail">
+                    <group>
+                        <field name="approval_user_id" readonly="1"/>
+                        <field name="approval_second_user_id" readonly="1"  attrs="{'invisible':[('approval_second_user_id','=',False)]}"/>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_qty']" position="attributes">
+                <attribute name="attrs">{'readonly': [('parent.state','=','purchase')]}</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                <attribute name="attrs">{'readonly': [('parent.state','=','purchase')]}</attribute>
+            </xpath>
+		</field>
+    </record>
+</odoo>

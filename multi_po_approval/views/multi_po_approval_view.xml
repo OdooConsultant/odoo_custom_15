@@ -1,0 +1,67 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="multi_po_approval_list_view">
+			<field name="name">multi.po.approval.list</field>
+			<field name="model">multi.po.approval</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="company_id"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="multi_po_approval_form_view">
+			<field name="name">multi.po.approval.form</field>
+			<field name="model">multi.po.approval</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<div class="oe_title">
+							<label for="name" string="Name"/>
+							<h1>
+								<div class="d-flex">
+									<field class="text-break" name="name" required="1" placeholder="Approval Name..."/>
+								</div>
+							</h1>
+						</div>
+						<group>
+							<field name="company_id" required="1"/>
+						</group>
+						<notebook>
+							<page name="details" string="Details">
+								<field name="approval_user_ids">
+									<tree editable="bottom">
+										<field name="user_ids" widget="many2many_tags" required="1"/>
+										<field name="required_second_approval" required="1"/>
+										<field name="second_approver_user_ids" force_save="1" widget="many2many_tags" attrs="{'readonly':[('required_second_approval','!=','yes')], 'required':[('required_second_approval','=','yes')]}"/>
+										<field name="currency_id" invisible="1"/>
+										<field name="from_amount" readonly="1"/>
+										<field name="to_amount"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids"/>
+						<field name="activity_ids"/>
+						<field name="message_ids"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		<record model="ir.actions.act_window" id="multi_po_approval_action_window">
+			<field name="name">Multi PO Approval</field>
+			<field name="res_model">multi.po.approval</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+
+		<menuitem name="Multi Po Approval Table" id="multi_po_approval_menu_root_menu" action="multi_po_approval.multi_po_approval_action_window" parent="purchase.menu_purchase_config" sequence="10"/>
+		
+		<menuitem name="Multi Po Approval" id="multi_po_approval_menu_1" parent="multi_po_approval.multi_po_approval_menu_root_menu"
+			action="multi_po_approval.multi_po_approval_action_window"/>
+	</data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_multi_po_approval_id,name_multi_po_approval_id,model_multi_po_approval,,1,1,1,1
+access_approval_user,name_approval_user,model_approval_user,,1,1,1,1
+access_send_approval,name_send_approval,model_approval_send,,1,1,1,1
+access_reason_po,name_reason_po,model_reason_po,,1,1,1,1
