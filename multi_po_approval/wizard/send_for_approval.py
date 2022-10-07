@@ -18,14 +18,31 @@ class SendForApproval(models.TransientModel):
         domain = [('id', '!=', self.env.user.id)]
         second_users_domain = [('id', '!=', self.env.user.id)]
         users = []
-        if purchase_id.currency_id.name == 'NZD':
+        company_ids = self.env['res.company'].sudo().search([])
+        amount = purchase_id.amount_total
+        if len(company_ids.ids) == 1 and company_ids.currency_id.name != 'NZD':
             amount = purchase_id.amount_total
         else:
-            to_currency_id = self.env['res.currency'].sudo().search([('name', '=', 'NZD')], limit=1)
             nzd_company_id = self.env['res.company'].sudo().search([('currency_id.name', '=', 'NZD')], limit=1)
-            amount = purchase_id.currency_id._convert(purchase_id.amount_total, to_currency_id, nzd_company_id,
-                                                      fields.Date.today())
-        if purchase_id:
+            if nzd_company_id:
+                if purchase_id.currency_id.name == 'NZD':
+                    amount = purchase_id.amount_total
+                else:
+                    to_currency_id = self.env['res.currency'].sudo().search([('name', '=', 'NZD')], limit=1)
+                    if to_currency_id:
+                        amount = purchase_id.currency_id._convert(purchase_id.amount_total, to_currency_id, nzd_company_id,
+                                                                  fields.Date.today())
+            else:
+                default_company_id = self.env['res.company'].sudo().search([('id','=',self._context.get('default_company_id', self.env.company.id))])
+                if default_company_id:
+                    if purchase_id.currency_id.id == default_company_id.currency_id.id:
+                        amount = purchase_id.amount_total
+                    else:
+                        amount = purchase_id.currency_id._convert(purchase_id.amount_total, default_company_id.currency_id, default_company_id,
+                                                                      fields.Date.today())
+                else:
+                    amount = purchase_id.amount_total
+        if purchase_id: 
             if not purchase_id.analytic_account_id and purchase_id.partner_id.approval_id:
                 approval_id = purchase_id.partner_id.approval_id
             elif purchase_id.analytic_account_id and purchase_id.analytic_account_id.approval_id:
