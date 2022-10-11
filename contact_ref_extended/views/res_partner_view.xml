@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="res_partner_view_inherit">
+        <field name="name">res.partner.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_name']" position="after">
+                <field name="ref"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="res_partner_kanban_view_inherit">
+        <field name="name">res.partner.kanban.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="before">
+                <field name="ref"/>
+            </field>
+			<xpath expr="//ul" position="replace">
+				<ul>
+					<li t-if="record.parent_id.raw_value and !record.function.raw_value">
+						<field name="parent_id"/>
+					</li>
+					<li t-if="!record.parent_id.raw_value and record.function.raw_value">
+						<field name="function"/>
+					</li>
+					<li t-if="record.parent_id.raw_value and record.function.raw_value">
+						<field name="function"/>
+						at
+						<field name="parent_id"/>
+					</li>
+					<li t-if="record.city.raw_value or record.country_id.raw_value">
+						<t t-if="record.city.raw_value">
+							<field name="city"/>
+							<!-- <t t-if="record.country_id.raw_value">,</t> -->
+						</t>
+						<!-- <t t-if="record.country_id.raw_value">
+							<field name="country_id"/>
+						</t> -->
+					</li>
+					<li t-if="record.email.raw_value" class="o_text_overflow">
+						<field name="email"/>
+					</li>
+				</ul>
+			</xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="res_partner_kanban_view_inherit1">
+        <field name="name">res.partner.kanban.view.inherit1</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_setup.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_kanban_partner_categories')]//span[hasclass('oe_kanban_list_many2many')]" position="replace">
+                <span class="oe_kanban_list_many2many">
+                    <t t-if="record.ref.raw_value" class="o_text_overflow"><field name="ref"/></t>
+                    <field name="category_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="base_view_res_partner_filter_inherit">
+        <field name="name">res.partner.filter.view.inherit1</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="ref" filter_domain="[('ref', 'ilike', self)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
